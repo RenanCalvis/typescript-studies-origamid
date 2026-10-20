@@ -9,6 +9,7 @@ interface Produto {
   preco: number;
   descricao: string;
   garantia: string;
+  seguroAcidentes: boolean;
   fabricante: Empresa;
   montadora: Empresa;
 }
