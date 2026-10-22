@@ -2,16 +2,18 @@
 // Defina a interface da API: https://api.origamid.dev/json/cursos.json e mostre os dados na tela.
 
 // Existem apenas dois níveis de cursos, Iniciante (iniciante) e Avançado (avancado). Se for para iniciante pinte o título de azul, para avançado pinte de vermelho.
-
+// Extra para manipular o DOM: Atribuir a cor inversa da definida para color, ou seja, se for color red enão o background é blue... Fazer isso criando uma outra função e manipulando o DOM fora do escopo de showCurse
 interface Curso {
   aulas: string;
   gratuito: boolean;
   horas: number;
   idAulas: Array<number>;
-  nivel: string;
+  nivel: 'iniciante' | 'avancado';
   nome: string;
   tags: Array<string>;
 }
+// Reflete o Json então a fonte da verdade é o tipo dentro de Curso
+type Nivel = Curso['nivel'];
 
 async function fetchCursos() {
   console.log('TESTEEEE');
@@ -26,7 +28,10 @@ async function fetchCursos() {
 
     console.log(data);
     showCurso(data);
-    // colorNivel(data[0].nivel);
+    const bgCustom = document.querySelectorAll<HTMLElement>('.bg-custom');
+    for (let i = 0; i < bgCustom.length; i++) {
+      colorNivelBg(data[i].nivel, bgCustom[i]);
+    }
   } catch (error) {
     console.error('Falha ao buscar itens:', error);
     document.body.innerHTML = `
@@ -38,26 +43,24 @@ async function fetchCursos() {
 
 fetchCursos();
 
-function colorNivel(nivel: string) {
-  const redBg = 'background-color: red;';
-  const blueBg = 'background-color: blue;';
+function colorNivelBg(nivel: Nivel, tag: HTMLElement) {
+  const redBg = 'red';
+  const blueBg = 'blue';
 
-  const bgCustom = document.querySelector<HTMLElement>('.bg-custom');
-  console.log(bgCustom);
   if (nivel === 'iniciante') {
-    return (bgCustom!.style.cssText = blueBg);
+    tag.style.backgroundColor = redBg;
+    return;
   }
-  return (bgCustom!.style.cssText = redBg);
+  tag.style.backgroundColor = blueBg;
 }
 
 function showCurso(data: Curso[]) {
-  data.forEach((curso) => {
-    let color: string = 'red';
-    if (curso.nivel === 'iniciante') {
-      color = 'blue';
-    }
-    document.body.innerHTML += `
-    <div>
+  const htmlContent = data
+    .map((curso) => {
+      const color = curso.nivel === 'iniciante' ? 'blue' : 'red';
+
+      return `
+      <div>
       <h2 class='bg-custom' style="color: ${color};">Nome: ${curso.nome ?? 'Vazio'}</h2>
       <h2>Horas: ${curso.horas}</h2>
       <h2>Aulas: ${curso.aulas}</h2>
@@ -66,13 +69,15 @@ function showCurso(data: Curso[]) {
       <h2>Id das Aulas: ${curso.idAulas.join(', ')}</h2>
       <h2>Nível: ${curso.nivel}</h2>
       <h2>${'Aura'}</h2>
-    </div>
-  `;
-  });
+      </div>
+      `;
+    })
+    .join('');
+  console.log(htmlContent);
+  document.body.innerHTML = htmlContent;
 }
 
-
-//Solução aula: 
+//Solução aula:
 // interface Curso {
 //   nome: string;
 //   horas: number;

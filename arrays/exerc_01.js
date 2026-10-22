@@ -12,7 +12,10 @@ async function fetchCursos() {
         console.log('TESTEEE2');
         console.log(data);
         showCurso(data);
-        // colorNivel(data[0].nivel);
+        const bgCustom = document.querySelectorAll('.bg-custom');
+        for (let i = 0; i < bgCustom.length; i++) {
+            colorNivelBg(data[i].nivel, bgCustom[i]);
+        }
     }
     catch (error) {
         console.error('Falha ao buscar itens:', error);
@@ -23,24 +26,21 @@ async function fetchCursos() {
     }
 }
 fetchCursos();
-function colorNivel(nivel) {
-    const redBg = 'background-color: red;';
-    const blueBg = 'background-color: blue;';
-    const bgCustom = document.querySelector('.bg-custom');
-    console.log(bgCustom);
+function colorNivelBg(nivel, tag) {
+    const redBg = 'red';
+    const blueBg = 'blue';
     if (nivel === 'iniciante') {
-        return (bgCustom.style.cssText = blueBg);
+        tag.style.backgroundColor = redBg;
+        return;
     }
-    return (bgCustom.style.cssText = redBg);
+    tag.style.backgroundColor = blueBg;
 }
 function showCurso(data) {
-    data.forEach((curso) => {
-        let color = 'red';
-        if (curso.nivel === 'iniciante') {
-            color = 'blue';
-        }
-        document.body.innerHTML += `
-    <div>
+    const htmlContent = data
+        .map((curso) => {
+        const color = curso.nivel === 'iniciante' ? 'blue' : 'red';
+        return `
+      <div>
       <h2 class='bg-custom' style="color: ${color};">Nome: ${curso.nome ?? 'Vazio'}</h2>
       <h2>Horas: ${curso.horas}</h2>
       <h2>Aulas: ${curso.aulas}</h2>
@@ -49,11 +49,14 @@ function showCurso(data) {
       <h2>Id das Aulas: ${curso.idAulas.join(', ')}</h2>
       <h2>Nível: ${curso.nivel}</h2>
       <h2>${'Aura'}</h2>
-    </div>
-  `;
-    });
+      </div>
+      `;
+    })
+        .join('');
+    console.log(htmlContent);
+    document.body.innerHTML = htmlContent;
 }
-//Solução aula: 
+//Solução aula:
 // interface Curso {
 //   nome: string;
 //   horas: number;
