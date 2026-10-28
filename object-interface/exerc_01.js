@@ -4,7 +4,7 @@
 // 2 - Substitua o href do link (HTMLAnchorElement) de http:// para https://.
 const link = document.getElementById('origamid');
 if (link instanceof HTMLAnchorElement) {
-    link.href = 'https://www.origamid.com';
+    link.href = link.href.replace('http://', 'https://');
 }
 console.log(typeof link);
 console.dir(link);
