@@ -1,0 +1,12 @@
+// Exercício
+// 1 - Selecione o link utilizando o método getElementById.
+
+// 2 - Substitua o href do link (HTMLAnchorElement) de http:// para https://.
+
+const link = document.getElementById('origamid');
+if (link instanceof HTMLAnchorElement) {
+  link.href = 'https://www.origamid.com';
+}
+
+console.log(typeof link);
+console.dir(link);
